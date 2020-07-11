@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { Box, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/styles'
-import { green } from '@material-ui/core/colors'
 import Square from './Square'
 import GameControls from '../GameControls'
 import GameContext from '../../../state/GameContext'
@@ -23,14 +22,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
-  },
-  success: {
-    backgroundColor: green[600],
-    boxShadow: 'none',
-  },
-  error: {
-    backgroundColor: theme.palette.error.dark,
-    boxShadow: 'none',
   },
 }))
 
@@ -54,12 +45,13 @@ const OutcomeAlert = ({ outcome, ...props }) => {
           Computer wins!
         </Alert>
       )
+    default:
+      return null
   }
 }
 
 /**
  * Render a game board
- * @param [Array] board - an array of length 9 containing "x", "o" or undefined at the 9 positions on the board
  * @return {*}
  * @constructor
  */
