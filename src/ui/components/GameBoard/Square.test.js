@@ -1,11 +1,12 @@
 import React from 'react'
 import Square from './Square'
-import GameContext, { MARKER_O, MARKER_X } from '../../../state/GameContext'
+import GameContext from '../../../state/GameContext'
 import { mount } from 'enzyme'
 import { createMuiTheme } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/styles'
 import { Close } from '@material-ui/icons'
+import { MARKER_O, MARKER_X } from '../../../constants'
 
 const theme = createMuiTheme()
 

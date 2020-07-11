@@ -1,0 +1,5 @@
+export const MARKER_X = 'x'
+export const MARKER_O = 'o'
+export const PLAYER = 'PLAYER'
+export const AI = 'AI'
+export const CATS_GAME = 'CATS_GAME'

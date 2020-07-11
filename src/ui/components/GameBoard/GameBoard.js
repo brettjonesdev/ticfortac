@@ -1,12 +1,19 @@
-import React from 'react'
-import { Box } from '@material-ui/core'
+import React, { useContext } from 'react'
+import { Box, Snackbar } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/styles'
+import { green } from '@material-ui/core/colors'
 import Square from './Square'
+import GameControls from '../GameControls'
+import GameContext from '../../../state/GameContext'
+import { AI, CATS_GAME, PLAYER } from '../../../constants'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
   board: {
     display: 'flex',
@@ -17,7 +24,38 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     flex: 1,
   },
+  success: {
+    backgroundColor: green[600],
+    boxShadow: 'none',
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark,
+    boxShadow: 'none',
+  },
 }))
+
+const OutcomeAlert = ({ outcome, ...props }) => {
+  switch (outcome) {
+    case PLAYER:
+      return (
+        <Alert severity="success" {...props}>
+          You win!
+        </Alert>
+      )
+    case CATS_GAME:
+      return (
+        <Alert severity="warning" {...props}>
+          Cat's game
+        </Alert>
+      )
+    case AI:
+      return (
+        <Alert severity="error" {...props}>
+          Computer wins!
+        </Alert>
+      )
+  }
+}
 
 /**
  * Render a game board
@@ -27,9 +65,12 @@ const useStyles = makeStyles(() => ({
  */
 const GameBoard = () => {
   const classes = useStyles()
+  const { outcome, newGame } = useContext(GameContext)
+
   return (
     <Box className={classes.container}>
       <Box className={classes.board}>
+        <GameControls />
         <Box className={classes.row}>
           <Square borderRight borderBottom position={0} />
           <Square borderRight borderLeft borderBottom position={1} />
@@ -46,6 +87,18 @@ const GameBoard = () => {
           <Square borderTop borderLeft position={8} />
         </Box>
       </Box>
+      {outcome && (
+        <Snackbar
+          open
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          onClose={newGame}
+        >
+          <OutcomeAlert outcome={outcome} onClose={newGame} />
+        </Snackbar>
+      )}
     </Box>
   )
 }

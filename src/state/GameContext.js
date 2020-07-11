@@ -1,36 +1,38 @@
-import React, { useState, createContext, useCallback } from 'react'
+import React, { createContext, useCallback, useState } from 'react'
+import { determineOutcome, opposingMarker, opposingPlayer } from '../logic'
+import { MARKER_X } from '../constants'
 
 const GameContext = createContext()
 
-export const MARKER_X = 'x'
-export const MARKER_O = 'o'
-
-export const PLAYER_TURN = 'PLAYER_TURN'
-export const AI_TURN = 'AI_TURN'
-
 export const GameProvider = ({ children }) => {
   const [board, setBoard] = useState([])
-  const [turn, setTurn] = useState(PLAYER_TURN)
+  const [turn, setTurn] = useState(undefined)
   const [marker, setMarker] = useState(MARKER_X)
+  const [outcome, setOutcome] = useState(undefined)
 
-  const toggleMarker = useCallback(() => {
-    setMarker(marker === MARKER_X ? MARKER_O : MARKER_X)
-  }, [marker])
   const makeMove = useCallback(
     (position) => {
       const newBoard = [...board]
       newBoard[position] = marker
       setBoard(newBoard)
-      toggleMarker()
+      const victorMarker = determineOutcome(newBoard)
+      if (victorMarker) {
+        setOutcome(turn)
+      } else {
+        setMarker(opposingMarker(marker))
+        setTurn(opposingPlayer(turn))
+      }
     },
-    [board, marker, toggleMarker]
+    [board, marker, turn]
   )
   const newGame = useCallback(() => {
     setBoard([])
-    setTurn(PLAYER_TURN)
+    setTurn(undefined)
+    setOutcome(undefined)
+    setMarker(MARKER_X)
   }, [])
 
-  const value = { board, makeMove, newGame, turn, setTurn }
+  const value = { board, makeMove, newGame, turn, setTurn, outcome }
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 

@@ -1,10 +1,11 @@
 import React, { useCallback, useContext } from 'react'
-import GameContext, { MARKER_O, MARKER_X } from '../../../state/GameContext'
+import GameContext from '../../../state/GameContext'
 import clsx from 'clsx'
 import Close from '@material-ui/icons/Close'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import { Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+import { MARKER_O, MARKER_X } from '../../../constants'
 
 const dimensions = (width) => ({
   width,
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   borderLeft: { borderLeft: '3px solid white' },
   borderTop: { borderTop: '3px solid white' },
   borderBottom: { borderBottom: '3px solid white' },
-  marked: { cursor: 'not-allowed' },
+  disabled: { cursor: 'not-allowed' },
 }))
 
 const Square = ({
@@ -37,17 +38,17 @@ const Square = ({
   borderTop,
   borderBottom,
 }) => {
-  const { board, makeMove } = useContext(GameContext)
+  const { board, makeMove, outcome } = useContext(GameContext)
 
   const marker = board[position]
-  const isMarked = !!marker
+  const isDisabled = outcome || !!marker
   const classes = useStyles()
   const className = clsx(classes.square, {
     [classes.borderLeft]: borderLeft,
     [classes.borderRight]: borderRight,
     [classes.borderTop]: borderTop,
     [classes.borderBottom]: borderBottom,
-    [classes.marked]: isMarked,
+    [classes.disabled]: isDisabled,
   })
 
   const icon =
@@ -60,7 +61,7 @@ const Square = ({
     makeMove(position)
   }, [makeMove, position])
 
-  const onClick = isMarked ? undefined : moveHandler
+  const onClick = isDisabled ? undefined : moveHandler
   return (
     <Box className={className} onClick={onClick}>
       {icon}
