@@ -15,10 +15,13 @@ const Nav = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Title
+          Tic-tac-toe
         </Typography>
-        <Button href="https://github.com/brettjonesdev/" color="inherit">
-          Developer
+        <Button
+          href="https://github.com/brettjonesdev/tictactoe"
+          color="inherit"
+        >
+          Code
         </Button>
       </Toolbar>
     </AppBar>
