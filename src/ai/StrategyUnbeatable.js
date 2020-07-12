@@ -1,21 +1,6 @@
 import { determineOutcome, opposingMarker } from '../logic'
 import { CATS_GAME, MARKER_O, MARKER_X } from '../constants'
-import { getMoves, sleep } from './utils'
-
-export function getChildren(board, marker) {
-  const moves = getMoves(board)
-  if (!moves.length) {
-    return []
-  }
-  return moves.map((move) => {
-    const child = [...board]
-    child[move] = marker
-    return {
-      board: child,
-      children: getChildren(child, opposingMarker(marker)),
-    }
-  })
-}
+import { getAvailableMoveIndices, sleep } from './utils'
 
 function getScore(board) {
   const outcome = determineOutcome(board)
@@ -25,24 +10,48 @@ function getScore(board) {
   return null
 }
 
-export function minimax(node, maximizingPlayer) {
-  if (!node.children.length) {
-    return getScore(node.board)
+function minimax(node, marker) {
+  const availableIndices = getAvailableMoveIndices(node.board)
+
+  const outcome = determineOutcome(node.board)
+  if (outcome || availableIndices.length === 0) {
+    const score = getScore(node.board)
+    return { score }
   }
 
-  if (maximizingPlayer) {
-    let value = -Infinity
-    node.children.forEach((child) => {
-      value = Math.max(value, minimax(child, false))
+  const moves = availableIndices.map((index) => {
+    const newBoard = [...node.board]
+    newBoard[index] = marker
+    const move = {
+      index,
+      board: newBoard,
+    }
+
+    const result = minimax(move, opposingMarker(MARKER_X))
+    move.score = result.score
+
+    return move
+  })
+
+  let bestMove
+  if (marker === MARKER_X) {
+    let bestScore = -Infinity
+    moves.forEach((move) => {
+      if (move.score > bestScore) {
+        bestScore = move.score
+        bestMove = move
+      }
     })
-    return value
   } else {
-    let value = Infinity
-    node.children.forEach((child) => {
-      value = Math.min(value, minimax(child, true))
+    let bestScore = Infinity
+    moves.forEach((move) => {
+      if (move.score < bestScore) {
+        bestScore = move.score
+        bestMove = move
+      }
     })
-    return value
   }
+  return bestMove
 }
 
 export class StrategyUnbeatable {
@@ -50,30 +59,8 @@ export class StrategyUnbeatable {
   async determineMove(board, marker) {
     // this one can take a while so don't fake for as long
     await sleep(500)
-    const children = getChildren(board, marker)
-    const maximizingPlayer = marker === MARKER_X
-    let bestScore = maximizingPlayer ? -Infinity : Infinity
-    let bestChild = children[0]
-
-    children.forEach((node) => {
-      const score = minimax(node, maximizingPlayer)
-      if (maximizingPlayer) {
-        if (score > bestScore) {
-          bestScore = score
-          bestChild = node
-        }
-      } else {
-        if (score < bestScore) {
-          bestScore = score
-          bestChild = node
-        }
-      }
-    })
-    // We have the whole board, find the index that changed since that's the move we need to return
-    const moveIndex = bestChild.board.findIndex(
-      (value, index) => value !== board[index]
-    )
-    return moveIndex
+    const bestMove = minimax({ board }, marker)
+    return bestMove.index
   }
 }
 

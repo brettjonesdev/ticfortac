@@ -1,12 +1,12 @@
 import { determineOutcome, opposingMarker, randomMove } from '../logic'
-import { getMoves, sleep } from './utils'
+import { getAvailableMoveIndices, sleep } from './utils'
 
 export class StrategyBeatable {
   static title = 'Intermediate'
   async determineMove(board, marker) {
     await sleep(1000)
     let winningMove, blockingMove
-    const moves = getMoves(board)
+    const moves = getAvailableMoveIndices(board)
     moves.forEach((move) => {
       const moveBoard = [...board]
       moveBoard[move] = marker
