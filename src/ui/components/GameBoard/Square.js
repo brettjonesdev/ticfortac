@@ -5,7 +5,7 @@ import Close from '@material-ui/icons/Close'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import { Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MARKER_O, MARKER_X } from '../../../constants'
+import { MARKER_O, MARKER_X, PLAYER } from '../../../constants'
 
 const dimensions = (width) => ({
   width,
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   square: {
     [theme.breakpoints.down('sm')]: dimensions(80),
     [theme.breakpoints.up('md')]: dimensions(150),
-    [theme.breakpoints.up('lg')]: dimensions(200),
+    [theme.breakpoints.up('lg')]: dimensions(180),
     [theme.breakpoints.up('xl')]: dimensions(300),
     backgroundColor: theme.palette.primary.light,
     display: 'flex',
@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   borderTop: { borderTop: '3px solid white' },
   borderBottom: { borderBottom: '3px solid white' },
   disabled: { cursor: 'not-allowed' },
+  marker: { color: theme.palette.primary.contrastText },
 }))
 
 const Square = ({
@@ -38,30 +39,30 @@ const Square = ({
   borderTop,
   borderBottom,
 }) => {
-  const { board, makeMove, outcome } = useContext(GameContext)
+  const { board, makeMove, outcome, turn } = useContext(GameContext)
 
   const marker = board[position]
-  const isDisabled = outcome || !!marker
+  const canMakeMove = !outcome && !marker && turn === PLAYER
   const classes = useStyles()
   const className = clsx(classes.square, {
     [classes.borderLeft]: borderLeft,
     [classes.borderRight]: borderRight,
     [classes.borderTop]: borderTop,
     [classes.borderBottom]: borderBottom,
-    [classes.disabled]: isDisabled,
+    [classes.disabled]: !canMakeMove,
   })
 
   const icon =
     marker === MARKER_X ? (
-      <Close fontSize="inherit" />
+      <Close className={classes.marker} fontSize="inherit" />
     ) : marker === MARKER_O ? (
-      <RadioButtonUncheckedIcon fontSize="inherit" />
+      <RadioButtonUncheckedIcon className={classes.marker} fontSize="inherit" />
     ) : null
   const moveHandler = useCallback(() => {
     makeMove(position)
   }, [makeMove, position])
 
-  const onClick = isDisabled ? undefined : moveHandler
+  const onClick = canMakeMove ? moveHandler : undefined
   return (
     <Box className={className} onClick={onClick}>
       {icon}

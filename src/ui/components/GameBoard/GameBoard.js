@@ -6,6 +6,8 @@ import Square from './Square'
 import GameControls from '../GameControls'
 import GameContext from '../../../state/GameContext'
 import { AI, CATS_GAME, PLAYER } from '../../../constants'
+import SelectDifficulty from '../SelectDifficulty'
+import { Computer, Face } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -29,7 +31,8 @@ const OutcomeAlert = ({ outcome, ...props }) => {
   switch (outcome) {
     case PLAYER:
       return (
-        <Alert severity="success" {...props}>
+        <Alert icon={<Face />} severity="success" {...props}>
+          {/*// TODO fun icons*/}
           You win!
         </Alert>
       )
@@ -41,7 +44,7 @@ const OutcomeAlert = ({ outcome, ...props }) => {
       )
     case AI:
       return (
-        <Alert severity="error" {...props}>
+        <Alert icon={<Computer />} severity="error" {...props}>
           Computer wins!
         </Alert>
       )
@@ -78,6 +81,7 @@ const GameBoard = () => {
           <Square borderRight borderLeft borderTop position={7} />
           <Square borderTop borderLeft position={8} />
         </Box>
+        <SelectDifficulty />
       </Box>
       {outcome && (
         <Snackbar

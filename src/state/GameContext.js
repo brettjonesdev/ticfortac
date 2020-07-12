@@ -1,38 +1,48 @@
-import React, { createContext, useCallback, useState } from 'react'
-import { determineOutcome, opposingMarker, opposingPlayer } from '../logic'
-import { MARKER_X } from '../constants'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react'
+import { AI } from '../constants'
+import StrategyContext from './StrategyContext'
+import {
+  gameReducer,
+  initialState,
+  makeMove as makeMoveAction,
+  newGame as newGameAction,
+  setFirstMove as setFirstMoveAction,
+} from './game'
 
 const GameContext = createContext()
 
 export const GameProvider = ({ children }) => {
-  const [board, setBoard] = useState([])
-  const [turn, setTurn] = useState(undefined)
-  const [marker, setMarker] = useState(MARKER_X)
-  const [outcome, setOutcome] = useState(undefined)
+  const { strategy } = useContext(StrategyContext)
+  const [state, dispatch] = useReducer(gameReducer, undefined, initialState)
+  const timeoutId = useRef()
+  console.log(state)
 
-  const makeMove = useCallback(
-    (position) => {
-      const newBoard = [...board]
-      newBoard[position] = marker
-      setBoard(newBoard)
-      const victorMarker = determineOutcome(newBoard)
-      if (victorMarker) {
-        setOutcome(turn)
-      } else {
-        setMarker(opposingMarker(marker))
-        setTurn(opposingPlayer(turn))
-      }
-    },
-    [board, marker, turn]
-  )
-  const newGame = useCallback(() => {
-    setBoard([])
-    setTurn(undefined)
-    setOutcome(undefined)
-    setMarker(MARKER_X)
+  const makeMove = useCallback((position) => {
+    dispatch(makeMoveAction(position))
   }, [])
 
-  const value = { board, makeMove, newGame, turn, setTurn, outcome }
+  const newGame = (...args) => dispatch(newGameAction(...args))
+  const setFirstMove = (turn) => dispatch(setFirstMoveAction(turn))
+
+  const makeAiMove = useCallback(() => {
+    makeMove(strategy.determineMove(state.board, state.marker))
+  }, [makeMove, strategy, state])
+
+  useEffect(() => {
+    if (!state.outcome && state.turn === AI) {
+      timeoutId.current = setTimeout(makeAiMove, 1000)
+    }
+    return () => clearTimeout(timeoutId.current)
+  }, [state, makeAiMove])
+
+  const value = { ...state, makeMove, newGame, setFirstMove }
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 

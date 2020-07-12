@@ -27,19 +27,19 @@ const useStyles = makeStyles((theme) => ({
 
 const GameControls = () => {
   const classes = useStyles()
-  const { victor, turn, setTurn, newGame } = useContext(GameContext)
+  const { victor, turn, setFirstMove, newGame } = useContext(GameContext)
 
   const playerProps = {
     icon: <Face />,
     color: turn === PLAYER ? 'primary' : undefined,
     label: 'Player',
-    onClick: turn ? undefined : () => setTurn(PLAYER),
+    onClick: turn ? undefined : () => setFirstMove(PLAYER),
   }
   const computerProps = {
     icon: <Computer />,
     color: turn === AI ? 'primary' : undefined,
     label: 'Computer',
-    onClick: turn ? undefined : () => setTurn(AI),
+    onClick: turn ? undefined : () => setFirstMove(AI),
   }
   return (
     <Box className={classes.root}>

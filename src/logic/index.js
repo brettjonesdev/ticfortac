@@ -20,7 +20,7 @@ export const winConditions = [
  * @return {boolean|boolean}
  */
 export const isOver = (board) =>
-  board.length === 9 && !board.some((value) => !value)
+  board.filter((x) => !!x).length === 9 && !board.some((value) => !value)
 
 /**
  * Return the game outcome, or undefined if game is incomplete

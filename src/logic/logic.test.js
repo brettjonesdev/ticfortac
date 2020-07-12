@@ -57,6 +57,24 @@ const incomplete = [
 ]
 
 describe('Game logic tests', () => {
+  test('case', () => {
+    expect(
+      determineOutcome([
+        [
+          'x',
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          'o',
+        ],
+      ])
+    ).toBe(undefined)
+  })
+
   xWins.forEach((board) => {
     it(`should determine an X victory for board ${JSON.stringify(
       board
