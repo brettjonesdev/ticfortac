@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   row: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
     flex: 1,
   },
 }))

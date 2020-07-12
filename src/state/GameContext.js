@@ -20,22 +20,27 @@ const GameContext = createContext()
 
 export const GameProvider = ({ children }) => {
   const { strategy } = useContext(StrategyContext)
-  const timeoutId = useRef()
+  const gameCount = useRef(0)
   const [state, dispatch] = useReducer(gameReducer, undefined, initialState)
 
-  const newGame = (...args) => dispatch(newGameAction(...args))
+  const newGame = (...args) => {
+    dispatch(newGameAction(...args))
+    gameCount.current++
+  }
   const setFirstMove = (turn) => dispatch(setFirstMoveAction(turn))
 
-  const makeAiMove = useCallback(() => {
-    const move = strategy.determineMove(state.board, state.upNextMarker)
-    dispatch(makeMove(move))
+  const makeAiMove = useCallback(async () => {
+    const game = gameCount.current
+    const move = await strategy.determineMove(state.board, state.upNextMarker)
+    if (gameCount.current === game) {
+      dispatch(makeMove(move))
+    }
   }, [strategy, state])
 
   useEffect(() => {
     if (!state.outcome && state.turn === AI) {
-      timeoutId.current = setTimeout(makeAiMove, 1000)
+      makeAiMove()
     }
-    return () => clearTimeout(timeoutId.current)
   }, [state, makeAiMove])
 
   const value = {

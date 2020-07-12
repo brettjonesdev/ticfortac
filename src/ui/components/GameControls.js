@@ -1,5 +1,11 @@
-import React, { useContext } from 'react'
-import { Box, Button, Chip, Typography } from '@material-ui/core'
+import React, { useCallback, useContext, useEffect } from 'react'
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Typography,
+} from '@material-ui/core'
 import GameContext from '../../state/GameContext'
 import { makeStyles } from '@material-ui/styles'
 import { Computer, Face } from '@material-ui/icons'
@@ -10,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing(1),
   },
   player: {
@@ -22,12 +28,31 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: theme.spacing(1),
+  },
+  restart: {
+    height: 24,
+  },
+  loading: {
+    color: theme.palette.primary.contrastText,
   },
 }))
 
 const GameControls = () => {
   const classes = useStyles()
-  const { victor, turn, setFirstMove, newGame } = useContext(GameContext)
+  const { turn, setFirstMove, newGame, outcome } = useContext(GameContext)
+  const keydownListener = useCallback(
+    (e) => {
+      if (e.key === 'r') {
+        newGame()
+      }
+    },
+    [newGame]
+  )
+  useEffect(() => {
+    window.addEventListener('keydown', keydownListener, true)
+    return () => window.removeEventListener('keydown', keydownListener, true)
+  }, [keydownListener])
 
   const playerProps = {
     icon: <Face />,
@@ -36,7 +61,12 @@ const GameControls = () => {
     onClick: turn ? undefined : () => setFirstMove(PLAYER),
   }
   const computerProps = {
-    icon: <Computer />,
+    icon:
+      turn === AI && !outcome ? (
+        <CircularProgress className={classes.loading} size={20} />
+      ) : (
+        <Computer />
+      ),
     color: turn === AI ? 'primary' : undefined,
     label: 'Computer',
     onClick: turn ? undefined : () => setFirstMove(AI),
@@ -46,9 +76,11 @@ const GameControls = () => {
       <Chip className={classes.player} {...playerProps} />
       <Box className={classes.middle}>
         {turn ? (
-          <Button onClick={newGame}>Restart</Button>
+          <Button className={classes.restart} onClick={newGame}>
+            Restart (R)
+          </Button>
         ) : (
-          <Typography variant="button">Who moves first?</Typography>
+          <Typography variant="button">First Move?</Typography>
         )}
       </Box>
 

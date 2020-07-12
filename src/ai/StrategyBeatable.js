@@ -3,9 +3,8 @@ import { sleep } from './utils'
 
 export class StrategyBeatable {
   static title = 'Novice'
-  //async
-  determineMove(board, marker) {
-    //  await sleep(1000)
+  async determineMove(board, marker) {
+    await sleep(1000)
     return randomMove(board)
   }
 }

@@ -47,9 +47,9 @@ export function minimax(node, maximizingPlayer) {
 
 export class StrategyUnbeatable {
   static title = 'Expert'
-  //async determineMove(board, marker) {
-  //  await sleep(1)
-  determineMove(board, marker) {
+  async determineMove(board, marker) {
+    // this one can take a while so don't fake for as long
+    await sleep(500)
     const children = getChildren(board, marker)
     const maximizingPlayer = marker === MARKER_X
     let bestScore = maximizingPlayer ? -Infinity : Infinity
