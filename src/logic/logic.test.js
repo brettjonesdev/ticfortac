@@ -4,6 +4,7 @@ import {
   opposingMarker,
   randomMove,
   isOver,
+  findWinningPositions,
 } from './index'
 import { CATS_GAME, MARKER_O, MARKER_X } from '../constants'
 
@@ -57,37 +58,21 @@ const incomplete = [
 ]
 
 describe('Game logic tests', () => {
-  test('case', () => {
-    expect(
-      determineOutcome([
-        [
-          'x',
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          'o',
-        ],
-      ])
-    ).toBe(undefined)
-  })
-
-  xWins.forEach((board) => {
+  xWins.forEach((board, index) => {
     it(`should determine an X victory for board ${JSON.stringify(
       board
     )}`, () => {
       expect(determineOutcome(board)).toBe(MARKER_X)
+      expect(findWinningPositions(board)).toEqual(winConditions[index])
     })
   })
 
-  oWins.forEach((board) => {
+  oWins.forEach((board, index) => {
     it(`should determine an O victory for board ${JSON.stringify(
       board
     )}`, () => {
       expect(determineOutcome(board)).toBe(MARKER_O)
+      expect(findWinningPositions(board)).toEqual(winConditions[index])
     })
   })
 

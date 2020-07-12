@@ -1,4 +1,4 @@
-import { CATS_GAME, MARKER_O, MARKER_X } from '../constants'
+import { CATS_GAME, MARKER_X } from '../constants'
 import { determineOutcome, opposingMarker, opposingPlayer } from '../logic'
 
 export const MAKE_MOVE = 'MAKE_MOVE'

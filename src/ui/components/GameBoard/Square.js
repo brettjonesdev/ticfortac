@@ -30,6 +30,22 @@ const useStyles = makeStyles((theme) => ({
   borderBottom: { borderBottom: '3px solid white' },
   disabled: { cursor: 'not-allowed' },
   marker: { color: theme.palette.primary.contrastText },
+  winningPosition: {
+    backgroundColor: theme.palette.secondary.main,
+    animation: `$color 2000ms ${theme.transitions.easing.easeInOut}`,
+    animationIterationCount: 'infinite',
+  },
+  '@keyframes color': {
+    '0%': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+    '50%': {
+      backgroundColor: theme.palette.secondary.light,
+    },
+    '100': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+  },
 }))
 
 const Square = ({
@@ -39,9 +55,14 @@ const Square = ({
   borderTop,
   borderBottom,
 }) => {
-  const { board, makeMove, outcome, turn, setFirstMove } = useContext(
-    GameContext
-  )
+  const {
+    board,
+    makeMove,
+    outcome,
+    turn,
+    setFirstMove,
+    winningPositions,
+  } = useContext(GameContext)
 
   const marker = board[position]
   const canMakeMove = !outcome && !marker && turn !== AI
@@ -52,6 +73,8 @@ const Square = ({
     [classes.borderTop]: borderTop,
     [classes.borderBottom]: borderBottom,
     [classes.disabled]: !canMakeMove,
+    [classes.winningPosition]:
+      winningPositions && winningPositions.includes(position),
   })
 
   const icon =

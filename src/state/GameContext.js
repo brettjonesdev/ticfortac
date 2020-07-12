@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useReducer,
   useRef,
 } from 'react'
@@ -15,6 +16,7 @@ import {
   newGame as newGameAction,
   setFirstMove as setFirstMoveAction,
 } from './game'
+import { findWinningPositions } from '../logic'
 
 const GameContext = createContext()
 
@@ -42,12 +44,16 @@ export const GameProvider = ({ children }) => {
       makeAiMove()
     }
   }, [state, makeAiMove])
+  const winningPositions = useMemo(() => findWinningPositions(state.board), [
+    state,
+  ])
 
   const value = {
     ...state,
     makeMove: (position) => dispatch(makeMove(position)),
     newGame,
     setFirstMove,
+    winningPositions,
   }
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }

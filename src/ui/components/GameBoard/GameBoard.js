@@ -5,9 +5,9 @@ import { makeStyles } from '@material-ui/styles'
 import Square from './Square'
 import GameControls from '../GameControls'
 import GameContext from '../../../state/GameContext'
-import { AI, CATS_GAME, PLAYER } from '../../../constants'
 import SelectDifficulty from '../SelectDifficulty'
-import { Computer, Face } from '@material-ui/icons'
+import CatIcon from '../CatIcon'
+import { CATS_GAME } from '../../../constants'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,33 +26,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     flex: 1,
   },
+  alert: {
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.contrastText,
+    fontSize: '1.8em',
+  },
+  catIcon: {
+    width: 40,
+    height: 40,
+    color: theme.palette.secondary.contrastText,
+  },
 }))
-
-const OutcomeAlert = ({ outcome, ...props }) => {
-  switch (outcome) {
-    case PLAYER:
-      return (
-        <Alert icon={<Face />} severity="success" {...props}>
-          {/*// TODO fun icons*/}
-          You win!
-        </Alert>
-      )
-    case CATS_GAME:
-      return (
-        <Alert severity="warning" {...props}>
-          Cat's game
-        </Alert>
-      )
-    case AI:
-      return (
-        <Alert icon={<Computer />} severity="error" {...props}>
-          Computer wins!
-        </Alert>
-      )
-    default:
-      return null
-  }
-}
 
 /**
  * Render a game board
@@ -62,7 +46,6 @@ const OutcomeAlert = ({ outcome, ...props }) => {
 const GameBoard = () => {
   const classes = useStyles()
   const { outcome, newGame } = useContext(GameContext)
-
   return (
     <Box className={classes.container}>
       <Box className={classes.board}>
@@ -84,7 +67,7 @@ const GameBoard = () => {
         </Box>
         <SelectDifficulty />
       </Box>
-      {outcome && (
+      {outcome === CATS_GAME && (
         <Snackbar
           open
           anchorOrigin={{
@@ -93,7 +76,13 @@ const GameBoard = () => {
           }}
           onClose={newGame}
         >
-          <OutcomeAlert outcome={outcome} onClose={newGame} />
+          <Alert
+            icon={<CatIcon className={classes.catIcon} />}
+            className={classes.alert}
+            onClose={newGame}
+          >
+            Cat's game
+          </Alert>
         </Snackbar>
       )}
     </Box>

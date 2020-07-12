@@ -66,3 +66,11 @@ export const randomMove = (board) => {
   }
   return randomMove
 }
+
+export const findWinningPositions = (board) => {
+  const outcome = determineOutcome(board)
+  if (!outcome || outcome === CATS_GAME) return null
+  return winConditions.find((winCondition) => {
+    return winCondition.every((index) => board[index] === outcome)
+  })
+}

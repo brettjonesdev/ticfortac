@@ -46,7 +46,7 @@ export function minimax(node, maximizingPlayer) {
 }
 
 export class StrategyUnbeatable {
-  static title = 'Expert'
+  static title = 'Unbeatable'
   async determineMove(board, marker) {
     // this one can take a while so don't fake for as long
     await sleep(500)

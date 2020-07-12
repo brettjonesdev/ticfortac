@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+function getColor({ outcome, turn, player }) {
+  if (outcome === player) return 'secondary'
+  if (outcome) return undefined
+  if (turn === player) return 'primary'
+}
+
 const GameControls = () => {
   const classes = useStyles()
   const { turn, setFirstMove, newGame, outcome } = useContext(GameContext)
@@ -56,7 +62,7 @@ const GameControls = () => {
 
   const playerProps = {
     icon: <Face />,
-    color: turn === PLAYER ? 'primary' : undefined,
+    color: getColor({ outcome, turn, player: PLAYER }),
     label: 'Player',
     onClick: turn ? undefined : () => setFirstMove(PLAYER),
   }
@@ -67,7 +73,7 @@ const GameControls = () => {
       ) : (
         <Computer />
       ),
-    color: turn === AI ? 'primary' : undefined,
+    color: getColor({ outcome, turn, player: AI }),
     label: 'Computer',
     onClick: turn ? undefined : () => setFirstMove(AI),
   }
