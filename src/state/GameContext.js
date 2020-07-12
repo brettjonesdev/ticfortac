@@ -11,7 +11,7 @@ import StrategyContext from './StrategyContext'
 import {
   gameReducer,
   initialState,
-  makeMove as makeMoveAction,
+  makeMove,
   newGame as newGameAction,
   setFirstMove as setFirstMoveAction,
 } from './game'
@@ -20,20 +20,16 @@ const GameContext = createContext()
 
 export const GameProvider = ({ children }) => {
   const { strategy } = useContext(StrategyContext)
-  const [state, dispatch] = useReducer(gameReducer, undefined, initialState)
   const timeoutId = useRef()
-  console.log(state)
-
-  const makeMove = useCallback((position) => {
-    dispatch(makeMoveAction(position))
-  }, [])
+  const [state, dispatch] = useReducer(gameReducer, undefined, initialState)
 
   const newGame = (...args) => dispatch(newGameAction(...args))
   const setFirstMove = (turn) => dispatch(setFirstMoveAction(turn))
 
   const makeAiMove = useCallback(() => {
-    makeMove(strategy.determineMove(state.board, state.marker))
-  }, [makeMove, strategy, state])
+    const move = strategy.determineMove(state.board, state.upNextMarker)
+    dispatch(makeMove(move))
+  }, [strategy, state])
 
   useEffect(() => {
     if (!state.outcome && state.turn === AI) {
@@ -42,7 +38,12 @@ export const GameProvider = ({ children }) => {
     return () => clearTimeout(timeoutId.current)
   }, [state, makeAiMove])
 
-  const value = { ...state, makeMove, newGame, setFirstMove }
+  const value = {
+    ...state,
+    makeMove: (position) => dispatch(makeMove(position)),
+    newGame,
+    setFirstMove,
+  }
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 

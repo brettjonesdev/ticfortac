@@ -31,9 +31,9 @@ const SelectDifficulty = () => {
 
       {strategies.map((Strategy) => (
         <Chip
-          key={Strategy.label}
+          key={Strategy.title}
           className={classes.strategy}
-          label={Strategy.label}
+          label={Strategy.title}
           color={strategy instanceof Strategy ? 'primary' : undefined}
           onClick={() => setStrategy(new Strategy())}
         />

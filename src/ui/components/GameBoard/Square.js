@@ -5,7 +5,7 @@ import Close from '@material-ui/icons/Close'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import { Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MARKER_O, MARKER_X, PLAYER } from '../../../constants'
+import { AI, MARKER_O, MARKER_X, PLAYER } from '../../../constants'
 
 const dimensions = (width) => ({
   width,
@@ -39,10 +39,12 @@ const Square = ({
   borderTop,
   borderBottom,
 }) => {
-  const { board, makeMove, outcome, turn } = useContext(GameContext)
+  const { board, makeMove, outcome, turn, setFirstMove } = useContext(
+    GameContext
+  )
 
   const marker = board[position]
-  const canMakeMove = !outcome && !marker && turn === PLAYER
+  const canMakeMove = !outcome && !marker && turn !== AI
   const classes = useStyles()
   const className = clsx(classes.square, {
     [classes.borderLeft]: borderLeft,
@@ -59,8 +61,11 @@ const Square = ({
       <RadioButtonUncheckedIcon className={classes.marker} fontSize="inherit" />
     ) : null
   const moveHandler = useCallback(() => {
+    if (!turn) {
+      setFirstMove(PLAYER)
+    }
     makeMove(position)
-  }, [makeMove, position])
+  }, [makeMove, position, setFirstMove, turn])
 
   const onClick = canMakeMove ? moveHandler : undefined
   return (

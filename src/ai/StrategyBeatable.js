@@ -1,11 +1,13 @@
-import Strategy from './Strategy'
 import { randomMove } from '../logic'
+import { sleep } from './utils'
 
-class StrategyBeatable extends Strategy {
-  determineMove(board) {
+export class StrategyBeatable {
+  static title = 'Novice'
+  //async
+  determineMove(board, marker) {
+    //  await sleep(1000)
     return randomMove(board)
   }
 }
-StrategyBeatable.label = 'Novice'
 
 export default StrategyBeatable

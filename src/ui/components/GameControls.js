@@ -46,9 +46,7 @@ const GameControls = () => {
       <Chip className={classes.player} {...playerProps} />
       <Box className={classes.middle}>
         {turn ? (
-          <Button onClick={() => newGame()}>
-            {victor ? 'New Game' : 'Start Over'}
-          </Button>
+          <Button onClick={newGame}>Restart</Button>
         ) : (
           <Typography variant="button">Who moves first?</Typography>
         )}

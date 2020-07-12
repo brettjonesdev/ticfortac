@@ -1,12 +1,16 @@
-import React, { createContext, useState } from 'react'
-import StrategyBeatable from '../ai/StrategyBeatable'
-import StrategyUnbeatable from '../ai/StrategyUnbeatable'
+import React, { createContext, useEffect, useState } from 'react'
+import { strategies, getByName } from '../ai'
 
 const StrategyContext = createContext()
 
-const strategies = [StrategyBeatable, StrategyUnbeatable]
+const defaultStrategyName = localStorage.getItem('ai-strategy')
+const Strategy = getByName(defaultStrategyName)
+
 export const StrategyProvider = ({ children }) => {
-  const [strategy, setStrategy] = useState(new StrategyBeatable())
+  const [strategy, setStrategy] = useState(new Strategy())
+  useEffect(() => {
+    localStorage.setItem('ai-strategy', strategy.constructor.name)
+  }, [strategy])
 
   return (
     <StrategyContext.Provider value={{ strategy, setStrategy, strategies }}>
