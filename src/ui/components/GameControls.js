@@ -1,5 +1,11 @@
-import React, { useContext } from 'react'
-import { Box, Button, Chip, Typography } from '@material-ui/core'
+import React, { useCallback, useContext, useEffect } from 'react'
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Typography,
+} from '@material-ui/core'
 import GameContext from '../../state/GameContext'
 import { makeStyles } from '@material-ui/styles'
 import { Computer, Face } from '@material-ui/icons'
@@ -10,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing(1),
   },
   player: {
@@ -22,35 +28,65 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: theme.spacing(1),
+  },
+  restart: {
+    height: 24,
+  },
+  loading: {
+    color: theme.palette.primary.contrastText,
   },
 }))
 
+function getColor({ outcome, turn, player }) {
+  if (outcome === player) return 'secondary'
+  if (outcome) return undefined
+  if (turn === player) return 'primary'
+}
+
 const GameControls = () => {
   const classes = useStyles()
-  const { victor, turn, setTurn, newGame } = useContext(GameContext)
+  const { turn, setFirstMove, newGame, outcome } = useContext(GameContext)
+  const keydownListener = useCallback(
+    (e) => {
+      if (e.key === 'r') {
+        newGame()
+      }
+    },
+    [newGame]
+  )
+  useEffect(() => {
+    window.addEventListener('keydown', keydownListener, true)
+    return () => window.removeEventListener('keydown', keydownListener, true)
+  }, [keydownListener])
 
   const playerProps = {
     icon: <Face />,
-    color: turn === PLAYER ? 'primary' : undefined,
+    color: getColor({ outcome, turn, player: PLAYER }),
     label: 'Player',
-    onClick: turn ? undefined : () => setTurn(PLAYER),
+    onClick: turn ? undefined : () => setFirstMove(PLAYER),
   }
   const computerProps = {
-    icon: <Computer />,
-    color: turn === AI ? 'primary' : undefined,
+    icon:
+      turn === AI && !outcome ? (
+        <CircularProgress className={classes.loading} size={20} />
+      ) : (
+        <Computer />
+      ),
+    color: getColor({ outcome, turn, player: AI }),
     label: 'Computer',
-    onClick: turn ? undefined : () => setTurn(AI),
+    onClick: turn ? undefined : () => setFirstMove(AI),
   }
   return (
     <Box className={classes.root}>
       <Chip className={classes.player} {...playerProps} />
       <Box className={classes.middle}>
         {turn ? (
-          <Button onClick={() => newGame()}>
-            {victor ? 'New Game' : 'Start Over'}
+          <Button className={classes.restart} onClick={newGame}>
+            Restart (R)
           </Button>
         ) : (
-          <Typography variant="button">Who moves first?</Typography>
+          <Typography variant="button">First Move?</Typography>
         )}
       </Box>
 

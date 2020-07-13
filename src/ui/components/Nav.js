@@ -18,10 +18,13 @@ const Nav = () => {
           Tic-tac-toe
         </Typography>
         <Button
-          href="https://github.com/brettjonesdev/tictactoe"
           color="inherit"
+          href="https://github.com/brettjonesdev/tictactoe"
         >
           Code
+        </Button>
+        <Button color="inherit" href="https://brettjonesdev.com">
+          BrettJonesDev
         </Button>
       </Toolbar>
     </AppBar>

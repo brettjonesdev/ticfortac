@@ -1,23 +1,27 @@
 import React, { useCallback, useContext } from 'react'
 import GameContext from '../../../state/GameContext'
 import clsx from 'clsx'
-import Close from '@material-ui/icons/Close'
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import { Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MARKER_O, MARKER_X } from '../../../constants'
+import { AI, PLAYER } from '../../../constants'
+import Marker from './Marker'
 
 const dimensions = (width) => ({
   width,
   height: width,
-  fontSize: width / 2,
 })
+
+export const WIDTH_SMALL = 80
+export const WIDTH_MEDIUM = 150
+export const WIDTH_LARGE = 180
+export const WIDTH_XL = 300
+
 const useStyles = makeStyles((theme) => ({
   square: {
-    [theme.breakpoints.down('sm')]: dimensions(80),
-    [theme.breakpoints.up('md')]: dimensions(150),
-    [theme.breakpoints.up('lg')]: dimensions(200),
-    [theme.breakpoints.up('xl')]: dimensions(300),
+    [theme.breakpoints.down('sm')]: dimensions(WIDTH_SMALL),
+    [theme.breakpoints.up('md')]: dimensions(WIDTH_MEDIUM),
+    [theme.breakpoints.up('lg')]: dimensions(WIDTH_LARGE),
+    [theme.breakpoints.up('xl')]: dimensions(WIDTH_XL),
     backgroundColor: theme.palette.primary.light,
     display: 'flex',
     justifyContent: 'center',
@@ -29,6 +33,23 @@ const useStyles = makeStyles((theme) => ({
   borderTop: { borderTop: '3px solid white' },
   borderBottom: { borderBottom: '3px solid white' },
   disabled: { cursor: 'not-allowed' },
+  marker: { color: theme.palette.primary.contrastText },
+  winningPosition: {
+    backgroundColor: theme.palette.secondary.main,
+    animation: `$color 2000ms ${theme.transitions.easing.easeInOut}`,
+    animationIterationCount: 'infinite',
+  },
+  '@keyframes color': {
+    '0%': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+    '50%': {
+      backgroundColor: theme.palette.secondary.light,
+    },
+    '100': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+  },
 }))
 
 const Square = ({
@@ -38,33 +59,39 @@ const Square = ({
   borderTop,
   borderBottom,
 }) => {
-  const { board, makeMove, outcome } = useContext(GameContext)
+  const {
+    board,
+    makeMove,
+    outcome,
+    turn,
+    setFirstMove,
+    winningPositions,
+  } = useContext(GameContext)
 
   const marker = board[position]
-  const isDisabled = outcome || !!marker
+  const canMakeMove = !outcome && !marker && turn !== AI
   const classes = useStyles()
   const className = clsx(classes.square, {
     [classes.borderLeft]: borderLeft,
     [classes.borderRight]: borderRight,
     [classes.borderTop]: borderTop,
     [classes.borderBottom]: borderBottom,
-    [classes.disabled]: isDisabled,
+    [classes.disabled]: !canMakeMove,
+    [classes.winningPosition]:
+      winningPositions && winningPositions.includes(position),
   })
 
-  const icon =
-    marker === MARKER_X ? (
-      <Close fontSize="inherit" />
-    ) : marker === MARKER_O ? (
-      <RadioButtonUncheckedIcon fontSize="inherit" />
-    ) : null
   const moveHandler = useCallback(() => {
+    if (!turn) {
+      setFirstMove(PLAYER)
+    }
     makeMove(position)
-  }, [makeMove, position])
+  }, [makeMove, position, setFirstMove, turn])
 
-  const onClick = isDisabled ? undefined : moveHandler
+  const onClick = canMakeMove ? moveHandler : undefined
   return (
     <Box className={className} onClick={onClick}>
-      {icon}
+      <Marker marker={marker} />
     </Box>
   )
 }

@@ -1,3 +1,16 @@
+# Tic Tac Toe
+Single Player Tic Tac Toe with 3 levels of difficulty.
+
+Play the game [here](https://tic-for-tac.herokuapp.com/).
+
+Use the standard `create-react` commands, along with a few others:
+
+* `npm start`
+* `npm run test`
+* `npm run lint`
+
+# Create React App Boilerplate ↓↓↓
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -8,7 +8,7 @@ export const winConditions = [
   //vertical
   [0, 3, 6],
   [1, 4, 7],
-  [2, 6, 8],
+  [2, 5, 8],
   //diagonal
   [0, 4, 8],
   [2, 4, 6],
@@ -20,7 +20,7 @@ export const winConditions = [
  * @return {boolean|boolean}
  */
 export const isOver = (board) =>
-  board.length === 9 && !board.some((value) => !value)
+  board.filter((x) => !!x).length === 9 && !board.some((value) => !value)
 
 /**
  * Return the game outcome, or undefined if game is incomplete
@@ -65,4 +65,12 @@ export const randomMove = (board) => {
     randomMove = Math.floor(Math.random() * 9)
   }
   return randomMove
+}
+
+export const findWinningPositions = (board) => {
+  const outcome = determineOutcome(board)
+  if (!outcome || outcome === CATS_GAME) return null
+  return winConditions.find((winCondition) => {
+    return winCondition.every((index) => board[index] === outcome)
+  })
 }
