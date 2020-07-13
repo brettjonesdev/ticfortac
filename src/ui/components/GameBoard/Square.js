@@ -1,23 +1,27 @@
 import React, { useCallback, useContext } from 'react'
 import GameContext from '../../../state/GameContext'
 import clsx from 'clsx'
-import Close from '@material-ui/icons/Close'
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import { Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { AI, MARKER_O, MARKER_X, PLAYER } from '../../../constants'
+import { AI, PLAYER } from '../../../constants'
+import Marker from './Marker'
 
 const dimensions = (width) => ({
   width,
   height: width,
-  fontSize: width / 2,
 })
+
+export const WIDTH_SMALL = 80
+export const WIDTH_MEDIUM = 150
+export const WIDTH_LARGE = 180
+export const WIDTH_XL = 300
+
 const useStyles = makeStyles((theme) => ({
   square: {
-    [theme.breakpoints.down('sm')]: dimensions(80),
-    [theme.breakpoints.up('md')]: dimensions(150),
-    [theme.breakpoints.up('lg')]: dimensions(180),
-    [theme.breakpoints.up('xl')]: dimensions(300),
+    [theme.breakpoints.down('sm')]: dimensions(WIDTH_SMALL),
+    [theme.breakpoints.up('md')]: dimensions(WIDTH_MEDIUM),
+    [theme.breakpoints.up('lg')]: dimensions(WIDTH_LARGE),
+    [theme.breakpoints.up('xl')]: dimensions(WIDTH_XL),
     backgroundColor: theme.palette.primary.light,
     display: 'flex',
     justifyContent: 'center',
@@ -77,12 +81,6 @@ const Square = ({
       winningPositions && winningPositions.includes(position),
   })
 
-  const icon =
-    marker === MARKER_X ? (
-      <Close className={classes.marker} fontSize="inherit" />
-    ) : marker === MARKER_O ? (
-      <RadioButtonUncheckedIcon className={classes.marker} fontSize="inherit" />
-    ) : null
   const moveHandler = useCallback(() => {
     if (!turn) {
       setFirstMove(PLAYER)
@@ -93,7 +91,7 @@ const Square = ({
   const onClick = canMakeMove ? moveHandler : undefined
   return (
     <Box className={className} onClick={onClick}>
-      {icon}
+      <Marker marker={marker} />
     </Box>
   )
 }

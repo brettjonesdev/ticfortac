@@ -17,12 +17,8 @@ const Nav = () => {
         <Typography variant="h6" className={classes.title}>
           Tic-tac-toe
         </Typography>
-        <Button
-          href="https://github.com/brettjonesdev/tictactoe"
-          color="inherit"
-        >
-          Code
-        </Button>
+        <Button href="https://github.com/brettjonesdev/tictactoe">Code</Button>
+        <Button href="https://brettjonesdev.com">Made with ❤️ by Brett</Button>
       </Toolbar>
     </AppBar>
   )
