@@ -1,10 +1,11 @@
 import React from 'react'
 import { Box } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
-import GameBoard from '../components/GameBoard'
 import { GameProvider } from '../../state/GameContext'
 import { makeStyles } from '@material-ui/styles'
 import { StrategyProvider } from '../../state/StrategyContext'
+import Game from '../components/Game'
+
 const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: 'center',
@@ -22,7 +23,7 @@ const Home = () => {
           <Typography className={classes.title} variant="h2">
             Tic-tac-toe
           </Typography>
-          <GameBoard />
+          <Game />
         </GameProvider>
       </StrategyProvider>
     </Box>
