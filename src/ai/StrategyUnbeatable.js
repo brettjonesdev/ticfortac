@@ -5,8 +5,8 @@ import { getAvailableMoveIndices, sleep } from './utils'
 function getScore(board) {
   const outcome = determineOutcome(board)
   if (outcome === CATS_GAME) return 0
-  if (outcome === MARKER_X) return Infinity
-  if (outcome === MARKER_O) return -Infinity
+  if (outcome === MARKER_X) return 100
+  if (outcome === MARKER_O) return -100
   return null
 }
 
@@ -27,7 +27,7 @@ function minimax(node, marker) {
       board: newBoard,
     }
 
-    const result = minimax(move, opposingMarker(MARKER_X))
+    const result = minimax(move, opposingMarker(marker))
     move.score = result.score
 
     return move
