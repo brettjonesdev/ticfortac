@@ -21,7 +21,7 @@ const Home = () => {
       <StrategyProvider>
         <GameProvider>
           <Typography className={classes.title} variant="h2">
-            Tic-tac-toe
+            TIC-FOR-TAC
           </Typography>
           <Game />
         </GameProvider>

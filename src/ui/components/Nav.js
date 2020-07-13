@@ -15,7 +15,7 @@ const Nav = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Tic-tac-toe
+          Tic-for-tac
         </Typography>
         <Button
           color="inherit"
