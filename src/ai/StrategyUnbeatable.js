@@ -1,6 +1,7 @@
 import { determineOutcome, opposingMarker } from '../logic'
 import { CATS_GAME, MARKER_O, MARKER_X } from '../constants'
-import { getAvailableMoveIndices, sleep } from './utils'
+import { getAvailableMoveIndices } from './utils'
+import Strategy from './Strategy'
 
 function getScore(board) {
   const outcome = determineOutcome(board)
@@ -54,11 +55,9 @@ function minimax(node, marker) {
   return bestMove
 }
 
-export class StrategyUnbeatable {
+export class StrategyUnbeatable extends Strategy {
   static title = 'Unbeatable'
-  async determineMove(board, marker) {
-    // this one can take a while so don't fake for as long
-    await sleep(500)
+  findBestMove(board, marker) {
     const bestMove = minimax({ board }, marker)
     return bestMove.index
   }
