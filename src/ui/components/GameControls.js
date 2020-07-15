@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   restart: {
     height: 24,
+    padding: 0,
   },
   loading: {
     color: theme.palette.primary.contrastText,

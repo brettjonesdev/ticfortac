@@ -1,10 +1,9 @@
 import { randomMove } from '../logic'
-import { sleep } from './utils'
+import Strategy from './Strategy'
 
-export class StrategyRandom {
+export class StrategyRandom extends Strategy {
   static title = 'Novice'
-  async determineMove(board, marker) {
-    await sleep(1000)
+  findBestMove(board, marker) {
     return randomMove(board)
   }
 }
